@@ -8,7 +8,10 @@
   "author": "Emmanuel",
   "license": "MIT",
   "dependencies": {
+    "@babel/core": "^7.7.7",
+    "glob": "^7.1.6",
     "inquirer": "^7.0.2",
+    "listr": "^0.14.3",
     "minimist": "^1.2.0"
   }
 }
