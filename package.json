@@ -1,0 +1,14 @@
+{
+  "name": "react-css-modulizer",
+  "version": "1.0.0",
+  "main": "index.js",
+  "bin": {
+    "react-css-modulizer": "./index.js"
+  },
+  "author": "Emmanuel",
+  "license": "MIT",
+  "dependencies": {
+    "inquirer": "^7.0.2",
+    "minimist": "^1.2.0"
+  }
+}
