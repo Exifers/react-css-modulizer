@@ -9,9 +9,13 @@
   "license": "MIT",
   "dependencies": {
     "@babel/core": "^7.7.7",
+    "context-sequence": "^1.0.0",
+    "css": "^2.2.4",
+    "fs-extra": "^8.1.0",
     "glob": "^7.1.6",
+    "global": "^4.4.0",
     "inquirer": "^7.0.2",
-    "listr": "^0.14.3",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "terminalizer": "^0.7.1"
   }
 }

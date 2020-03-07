@@ -4,9 +4,11 @@ const parseArgs = require('minimist');
 const babel = require('@babel/core');
 const glob = require('glob');
 const path = require('path');
-const fs = require('fs');
-const Listr = require('listr');
+const css = require("css");
+const {extractClassnames} = require("./cssExtractor");
 const reactTransformClassnameToCssModules = require('babel-plugin-react-transform-classname-to-css-modules');
+const Sequence = require('context-sequence');
+const fs = require('fs-extra');
 
 function readFile(relPath) {
   const absPath = path.join(process.cwd(), relPath);
@@ -16,51 +18,73 @@ function readFile(relPath) {
 function writeFile(relPath, content) {
   const absPath = path.join(process.cwd(), relPath);
   fs.mkdirSync(path.dirname(relPath), {recursive: true});
-  return fs.writeFileSync(absPath, content, 'utf-8'); 
+  return fs.writeFileSync(absPath, content, 'utf-8');
 }
 
 // parse args
-const parsedArgs = parseArgs(process.argv);
+const parsedArgs = parseArgs(process.argv); // TODO: display help
 
-const jsxPath = parsedArgs.jsxPath || '**/*.js'; // TODO: add jsx 
-const stylesPath = parsedArgs.stylesPath || '**/*.css';
-const outPath = parsedArgs.outPath || 'modulized/';
+const projectPath = parsedArgs['path'] || 'src/';
+const jsxPath = projectPath + (parsedArgs['jsxPath'] || '**/{*.js,*.jsx}'); // TODO: better join with globing pattern
+const stylesPath = parsedArgs['stylesPath'] || '**/*.css';
+const outPath = parsedArgs['outPath'] || 'modulized/';
+const debug = parsedArgs['debug'] || false;
 
+// TODO : add all other files to outPath folder
+
+// TODO : extract CSS classnames nicely
 
 const ignore = ['**/node_modules/**', path.join(outPath, '**')];
 
-const tasks = new Listr([
+const tasks = new Sequence([
   {
-    title: 'List jsx files',
-    task: ctx => {
-      ctx.jsFiles = glob.sync(jsxPath, {ignore}); 
+    task(input, ctx) {
+      ctx.jsxFilesPaths = glob.sync(jsxPath, {ignore});
     }
   },
   {
-    title: 'List css files',
-    task: ctx => {
-      ctx.cssFiles = glob.sync(stylesPath, {ignore});
-    }
-  },
-  {
-    title: 'Modulize css',
-    task: ctx => {
-      const { jsFiles, cssFiles } = ctx;
+    task(input, ctx) {
+      const cssFiles = glob.sync(stylesPath, {ignore});
 
-      for (const jsFile of jsFiles) {
+      ctx.stylesFilesData = cssFiles.map(cssFile => {
+        let entry = {};
+        entry.path = cssFile;
+        const cssCode = readFile(cssFile);
+        const parsed = css.parse(cssCode);
+        entry.classnames = extractClassnames(parsed);
+        return entry;
+      });
+    }
+  },
+  {
+    task(input, ctx) {
+      fs.copySync(projectPath, path.join(outPath, projectPath));
+    }
+  },
+  // TODO : check for collisions / conflicts and ask for details
+  // types of conflicts :
+  // - multiple files have the same classes
+  // - one file has the same class multiple times
+  {
+    task(input, ctx) {
+      const {jsxFilesPaths, stylesFilesData} = ctx;
+
+      for (const jsxFilePath of jsxFilesPaths) {
 
         const plugin = [
           reactTransformClassnameToCssModules,
           {
-            filesPaths: cssFiles,
-            jsxFilePath: jsFile
+            stylesFilesData,
+            jsxFilePath,
+            debug
           }
         ];
 
-        const transformed = babel.transform(readFile(jsFile), {plugins:[plugin]});
+        const transformed = babel.transform(readFile(jsxFilePath), {plugins: [plugin]});
         const code = transformed.code;
 
-        writeFile(path.join(outPath, jsFile), code);
+        writeFile(path.join(outPath, jsxFilePath), code);
+
       }
     }
   }
