@@ -1,6 +1,7 @@
 {
   "name": "react-css-modulizer",
-  "version": "1.0.0",
+  "public": true,
+  "version": "0.1.0",
   "main": "index.js",
   "bin": {
     "react-css-modulizer": "./index.js"
@@ -17,5 +18,6 @@
     "inquirer": "^7.0.2",
     "minimist": "^1.2.0",
     "terminalizer": "^0.7.1"
-  }
+  },
+  "files": ["cssExtractors.js", "index.js", "README.md"]
 }
