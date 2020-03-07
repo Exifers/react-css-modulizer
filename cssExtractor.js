@@ -5,10 +5,14 @@ function extractClassnames(cssAST) {
     selectors = [...selectors, ...rule.selectors];
   }
 
-  const classnameRegex = /^\.[a-zA-Z0-9\-_]+$/;
-  return selectors
-    .filter(selector => !!selector.match(classnameRegex))
-    .map(e => e.substring(1));
+  const classnameRegex = /\.[a-zA-Z0-9\-_]+/g;
+
+  const classnames = [];
+  for (selector of selectors) {
+    classnames.push(...selector.match(classnameRegex))
+  }
+
+  return classnames.map(e => e.substring(1));
 }
 
 module.exports = {

@@ -30,20 +30,16 @@ const stylesPath = parsedArgs['stylesPath'] || '**/*.css';
 const outPath = parsedArgs['outPath'] || 'modulized/';
 const debug = parsedArgs['debug'] || false;
 
-// TODO : add all other files to outPath folder
-
-// TODO : extract CSS classnames nicely
-
 const ignore = ['**/node_modules/**', path.join(outPath, '**')];
 
 const tasks = new Sequence([
   {
-    task(input, ctx) {
+    task(_, ctx) {
       ctx.jsxFilesPaths = glob.sync(jsxPath, {ignore});
     }
   },
   {
-    task(input, ctx) {
+    task(_, ctx) {
       const cssFiles = glob.sync(stylesPath, {ignore});
 
       ctx.stylesFilesData = cssFiles.map(cssFile => {
@@ -57,7 +53,7 @@ const tasks = new Sequence([
     }
   },
   {
-    task(input, ctx) {
+    task() {
       fs.copySync(projectPath, path.join(outPath, projectPath));
     }
   },
@@ -66,7 +62,7 @@ const tasks = new Sequence([
   // - multiple files have the same classes
   // - one file has the same class multiple times
   {
-    task(input, ctx) {
+    task(_, ctx) {
       const {jsxFilesPaths, stylesFilesData} = ctx;
 
       for (const jsxFilePath of jsxFilesPaths) {
