@@ -2,10 +2,11 @@
   "name": "react-css-modulizer",
   "description": "A CLI to convert className string literals into CSS Modules",
   "public": true,
-  "version": "0.1.4",
-  "main": "index.js",
+  "version": "0.1.5",
+  "main": "bin/react-css-modulizer.js",
+  "preferGlobal": true,
   "bin": {
-    "react-css-modulizer": "./index.js"
+    "react-css-modulizer": "bin/react-css-modulizer.js"
   },
   "author": "Emmanuel",
   "license": "MIT",
