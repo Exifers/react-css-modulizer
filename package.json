@@ -1,7 +1,8 @@
 {
   "name": "react-css-modulizer",
+  "description": "A CLI to convert className string literals into CSS Modules",
   "public": true,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "index.js",
   "bin": {
     "react-css-modulizer": "./index.js"
