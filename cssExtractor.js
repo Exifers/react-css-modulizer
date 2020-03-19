@@ -9,7 +9,10 @@ function extractClassnames(cssAST) {
 
   const classnames = [];
   for (selector of selectors) {
-    classnames.push(...selector.match(classnameRegex))
+    const matches = selector.match(classnameRegex)
+    if (matches !== null) {
+      classnames.push(...matches)
+    }
   }
 
   return classnames.map(e => e.substring(1));
