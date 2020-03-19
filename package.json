@@ -2,7 +2,7 @@
   "name": "react-css-modulizer",
   "description": "A CLI to convert className string literals into CSS Modules",
   "public": true,
-  "version": "0.1.5",
+  "version": "0.1.6",
   "main": "bin/react-css-modulizer.js",
   "preferGlobal": true,
   "bin": {
@@ -19,8 +19,7 @@
     "glob": "^7.1.6",
     "global": "^4.4.0",
     "inquirer": "^7.0.2",
-    "minimist": "^1.2.0",
-    "terminalizer": "^0.7.1"
+    "minimist": "^1.2.0"
   },
   "files": [
     "cssExtractor.js",
